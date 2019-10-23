@@ -4,20 +4,12 @@ const socketIO = require('socket.io');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
-const fs = require('fs');
-const path = require('path');
 
 
 const PORT = 4000;
 
 app
-.get('/chat', (req, res) => {
-    res
-    .status(200)
-    .set({
-        'Content-Type':'text/html; charset=utf-8'
-    })
-    .sendFile(path.join(__dirname, 'public', 'index.html'))
+  .use(express.static('public'))
   .listen(process.env.PORT || PORT, () => console.log(process.pid));
 
 console.log('http://localhost:4000');
