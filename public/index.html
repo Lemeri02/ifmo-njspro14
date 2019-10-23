@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Чат на сокетах</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" defer="defer"></script>
+    <script src="./socket.io.js"></script>
+    <script src="./chat.js" defer="defer"></script>
 </head>
+
 <body>
-  <div>
-    <h2>Чат:</h2>
-    <ul id="messages"></ul>
-    <form id="form">
-      <div>
-        <span id="change"></span>
-      </div>
-
-      <div>
-        <input type="text" id="message" name="message">
-        <button type="submit">Отправить</button>
-      </div>
-    </form>
-  </div>
-
-  <div>
-    <h2>Пользователи онлайн:</h2>
-    <ul id="users"></ul>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.slim.js"></script>
-  <script src="./script.js"></script>
+    <div class="container">
+        <div class="row">
+            <div class="col s9" style="display: flex; flex-direction: column; min-height: 95vh; justify-content: space-between;">
+                <ul class="collection with-header" style="position: relative;">
+                    <li class="collection-header">Чат:</li>
+                    <div style="overflow-y: auto; max-height: 73vh" id="messages">
+                    </div>
+                </ul>
+                <form id="form" class="row">
+                    <div class="row" style="margin: 0; padding: 0;">
+                        <span class="col s12" style="font-size: 11px;" id="change"></span>
+                    </div>
+                    <div class="col s12" style="display: flex; align-items: center; flex-wrap: nowrap;">
+                        <input type="text" id="message" required autocomplete="off" name="message">
+                        <button type="submit" class="btn">Send</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col s3">
+                <ul class="collection with-header">
+                    <li class="collection-header">Пользователи онлайн:</li>
+                    <div style="overflow-y: auto; max-height: 75vh" id="users">
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

@@ -4,12 +4,14 @@ const socketIO = require('socket.io');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
+ 
 
 
 const PORT = 4000;
 
 app
-  .use(express.static('public'))
+.use(express.static('public')) 
+
   .listen(process.env.PORT || PORT, () => console.log(process.pid));
 
 console.log('http://localhost:4000');
