@@ -17,7 +17,7 @@ app
     .set({
         'Content-Type':'text/html; charset=utf-8'
     })
-    .sendFile(path.join(__dirname, 'public', 'index.html'))
+    .sendFile(path.join(__dirname, 'public', 'index.html'))})
   .listen(process.env.PORT || PORT, () => console.log(process.pid));
 
 console.log('http://localhost:4000');
