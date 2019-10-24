@@ -47,6 +47,9 @@
                 <form id="messageForm">
                     <div class="form-group">
                         <label>Enter Message</label>
+                        <div class="row" style="margin: 0; padding: 0;">
+                                <span class="col s12" style="font-size: 11px;" id="change"></span>
+                            </div>
                         <textarea class="form-control" id="message"></textarea>
                         <br />
                         <input type="submit" class="btn btn-primary" value="Send Message" />
@@ -63,10 +66,11 @@
             const $message = $('#message');
             const $chat = $('#chat');
             const $messageArea = $('#messageArea');
-            const $userFormArea = $('#userFormArea');
+            const $userFormArea = $('.userFormArea');
             const $userForm = $('#userForm');
             const $users = $('#users');
             const $username = $('#username');
+            const $change = $('#change');
 
             $messageForm.submit(function(e){
                 e.preventDefault();
@@ -75,6 +79,7 @@
             });
 
             socket.on('new message', function(data){
+                change.innerHTML = '';
                 $chat.append('<div class="well"><strong>'+data.user+'</strong>: '+data.msg+'</div>');
             });
 
@@ -95,6 +100,14 @@
                     html += '<li class="list-group-item">'+data[i]+'</li>';
                 }
                 $users.html(html);
+            });
+
+            message.addEventListener('keypress', function(){
+                socket.emit('typing', $username.val());
+            });
+
+            socket.on('typing', function(data){
+                $change.html('<p><em>' + data + ' is typing a message...</em></p>');
             });
         });
     </script>

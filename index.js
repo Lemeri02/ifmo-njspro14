@@ -4,6 +4,8 @@ const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 users = [];
 connections = [];
+changers = new Set();
+
 
 server.listen(process.env.PORT || 3000);
 console.log('Server running...')
@@ -34,8 +36,11 @@ io.sockets.on('connection', function(socket){
         updateUsernames();
     });
 
+    socket.on('typing', function(data){
+        socket.broadcast.emit('typing', socket.username);
+    });
+
     function updateUsernames(){
         io.sockets.emit('get users', users);
     }
-
-})
+});
