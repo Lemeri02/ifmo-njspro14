@@ -1,57 +1,41 @@
 const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
 const app = express();
-const server = http.Server(app);
-const io = socketIO(server);
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
+users = [];
+connections = [];
 
+server.listen(process.env.PORT || 3000);
+console.log('Server running...')
 
-const PORT = 4000;
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/index.html');
+});
 
-app
-  .use(express.static('public'))
-  .listen(process.env.PORT || PORT, () => console.log(process.pid));
+io.sockets.on('connection', function(socket){
+    connections.push(socket);
+    console.log('Connected: %s sockets connected', connections.length);
 
-console.log('http://localhost:4000');
-
-
-
-const users = [];
-const changers = new Set();
-io.on('connection', socket => {
-    socket.on('reconnect', name => {
-        const {id} = socket;
-        name = name.trim() || 'Гость';
-        users.push({name, id});
-        socket.broadcast.emit('updateUserList', users.map(({name}) => name));
-        socket.emit('updateUserList', users.map(({name}) => name));
+    socket.on('disconnect', function(data){
+        users.splice(users.indexOf(socket.username), 1);
+        updateUsernames();
+        connections.splice(connections.indexOf(socket), 1);
+        console.log('Disconnected: %s sockets connected', connections.length);  
     });
-    socket.on('disconnect', () => {
-        const idx = users.findIndex(item => item.id == socket.id);
-        (idx !== -1) ? users.splice(idx, 1) : false;
-        socket.broadcast.emit('updateUserList', users.map(({name}) => name));
-        socket.emit('updateUserList', users.map(({name}) => name));
+    
+    socket.on('send message', function(data){
+        io.sockets.emit('new message', {msg: data, user: socket.username});
     });
-    socket.on('message', ({name, message}) => {
-        socket.broadcast.emit('message', {name, message});
-        socket.emit('message', {name, message});
 
+    socket.on('new user', function(data, callback){
+        callback(true);
+        socket.username = data;
+        users.push(socket.username);
+        updateUsernames();
     });
-    socket.on('change', name => {
-        let timers;
-        if (changers.has(name)) {
-            clearInterval(timers);
-            timers = setTimeout(()=>{
-                changers.delete(name);
-                socket.broadcast.emit('change', Array.from(changers));
-            }, 1500);
-        } else {
-            changers.add(name);
-            timers = setTimeout(()=>{
-                changers.delete(name);
-                socket.broadcast.emit('change', Array.from(changers));
-            }, 1500);
-        }
-        socket.broadcast.emit('change', Array.from(changers));
-    })
+
+    function updateUsernames(){
+        io.sockets.emit('get users', users);
+    }
+
 })

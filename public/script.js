@@ -1,5 +1,5 @@
 const name = prompt('Как вас зовут?').trim() || 'Гость';
-const socket = io('ws://cryptic-hollows-25494.herokuapp.com');
+const socket = io('ws://localhost:4000');
 
 socket.emit('reconnect', name);
 

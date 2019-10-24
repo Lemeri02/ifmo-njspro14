@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const name = prompt('Введите ваше имя: ', '');
-    const socket = io('ws://fierce-fortress-58896.herokuapp.com');
+    const socket = io('ws://localhost:4000');
     socket.emit('reConnect', name);
     form.addEventListener('submit', event => {
         event.preventDefault();
